@@ -6,31 +6,18 @@ public class Table {
     public int mealsCapacity = 10;
 
     synchronized public void placeMeal() throws InterruptedException {
-        boolean placedMeal = false;
-
-        while (!placedMeal) {
-            if (availableMeals < mealsCapacity) {
-                availableMeals++;
-                notifyAll();
-                placedMeal = true;
-            } else {
-                wait();
-            }
+        while (availableMeals >= mealsCapacity) {
+            wait();
         }
+        availableMeals++;
+        notifyAll();
     }
 
     synchronized public void takeMeal() throws InterruptedException {
-        boolean takenMeal = false;
-
-        while (!takenMeal) {
-
-            if (availableMeals > 0) {
-                availableMeals--;
-                notifyAll();
-                takenMeal = true;
-            } else {
-                wait();
-            }
+        while (availableMeals <= 0) {
+            wait();
         }
+        availableMeals--;
+        notifyAll();
     }
 }
